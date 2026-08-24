@@ -11,8 +11,19 @@ const userSchema = new mongoose.Schema(
     },
     hashedPassword: {
       type: String,
-      required: true
+      required: true,
+      minlength: 6
     },
+    email: {
+      type: String,
+      required: true,
+      unique: true
+    },
+    role: {
+      type: String,
+      enum: ['user', 'admin'],
+      default: 'user'
+    }
   },
   { timestamps: true },
 );
