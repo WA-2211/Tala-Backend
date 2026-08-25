@@ -3,7 +3,8 @@ const placeController = require('../controllers/place.controller')
 
 const verifyToken = require('../middleware/verifyToken')
 const validateObjectId = require('../middleware/validateObjectId')
+const isAdmin = require('../middleware/isAdmin')
 
-router.get('/', verifyToken, placeController.getAllPlaces)
-
+router.get('/', placeController.getAllPlaces)
+router.post('/', verifyToken, isAdmin, placeController.createPlace)
 module.exports = router

@@ -1,16 +1,39 @@
 const Place = require('../models/Place')
+const User = require('../models/User')
 
-async function getAllPlaces (req, res){
+async function getAllPlaces(req, res) {
     try {
         const allPlaces = await Place.find()
         res.status(200).json(allPlaces)
-        
+
     } catch (err) {
-        res.status(500).json({message: err.message})
-        
+        res.status(500).json({ message: err.message })
+
+    }
+}
+
+async function createPlace(req, res){
+    try {
+        const {name, category, priceRange, description, ratingAvg, tags} = req.body
+        const createdPlace = await Place.create({
+            name,
+            description,
+            category,
+            priceRange,
+            ratingAvg,
+            tags
+    })
+
+    res.status(201).json(createdPlace)
+    }
+    
+    catch (err) {
+            res.status(500).json({ message: err.message })
+
     }
 }
 
 module.exports = {
-    getAllPlaces
+    getAllPlaces,
+    createPlace
 }
