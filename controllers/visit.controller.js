@@ -64,8 +64,28 @@ async function getOneVisit(req, res){
     }
 }
 
+async function deleteVisit(req, res){
+    try {
+        const deletedVisit = await Visit.findByIdAndDelete(req.params.visitId)
+        if(!deletedVisit){
+            return res.status(404).json({message: 'Visit not found!'})
+        }
+
+        if(deletedVisit.user.toString() !== req.user._id.toString()){
+            return res.status(403).json({message: 'Unathorized, Owner access only!'})
+        }
+
+        res.status(204).json({message: 'Visit has been deleted!'})
+    } catch (err) {
+        res.status(500).json({ message: err.message })
+
+    }
+
+}
+
 module.exports = {
     getAllVisits,
     createVisit,
-    getOneVisit
+    getOneVisit,
+    deleteVisit
 }
