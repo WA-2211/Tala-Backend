@@ -2,9 +2,9 @@ const Visit = require('../models/Visit')
 const User = require('../models/User')
 const Place = require('../models/Place')
 
-async function getAllVisits(req, res){
+async function getAllVisits(req, res) {
     try {
-        const getMyVisits = await Visit.find({user: req.user._id}).populate('place')
+        const getMyVisits = await Visit.find({ user: req.user._id }).populate('place')
         res.status(200).json(getMyVisits)
     } catch (err) {
         res.status(500).json({ message: err.message })
@@ -13,6 +13,39 @@ async function getAllVisits(req, res){
 
 }
 
+async function createVisit(req, res) {
+    try {
+        const { place } = req.body
+        const foundPlace = await Place.findById(place)
+        
+        const visitedAt = new Date()
+        const daysOfCoolDown = 15
+        const coolDownUntil = new Date(visitedAt)
+        coolDownUntil.setDate(coolDownUntil.getDate()+ daysOfCoolDown)
+
+        if(!foundPlace){
+            return res.status(404).json({message: 'Place not found!'})
+        }
+
+
+        const createdVisit = await Visit.create({
+            visitedAt,
+            coolDownUntil,
+            place,
+            user: req.user._id
+        })
+        res.status(201).json(createdVisit)
+
+    } catch (err) {
+        if (err.name === 'ValidationError') {
+            return res.status(400).json({ message: err.message })
+        }
+        res.status(500).json({ message: err.message })
+
+    }
+}
+
 module.exports = {
-    getAllVisits
+    getAllVisits,
+    createVisit
 }

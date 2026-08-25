@@ -12,11 +12,14 @@ const visitSchema = new Schema(
    },
    user: {
     type: Schema.Types.ObjectId,
-    ref: 'User'
+    ref: 'User',
+    required: true
    },
    place:{
     type: Schema.Types.ObjectId,
-    ref: 'Place'
+    ref: 'Place',
+    required: true
+
    }
   },
   { timestamps: true },
