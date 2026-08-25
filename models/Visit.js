@@ -1,6 +1,6 @@
 const {Schema, model} = require("mongoose");
 
-const vistiSchema = new Schema(
+const visitSchema = new Schema(
   {
     visitedAt:{
       type: Date,
