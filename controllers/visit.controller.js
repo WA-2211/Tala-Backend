@@ -45,7 +45,22 @@ async function createVisit(req, res) {
     }
 }
 
+async function getOneVisit(req, res){
+    try {
+        const getVisit = await Visit.findById(req.params.visitId)
+        if(!getVisit){
+            return res.status(404).json({message: 'Visit not found!'})
+        }
+        res.status(200).json(getVisit)
+
+    } catch (err) {
+        res.status(500).json({ message: err.message })
+    
+    }
+}
+
 module.exports = {
     getAllVisits,
-    createVisit
+    createVisit,
+    getOneVisit
 }
