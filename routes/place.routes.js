@@ -6,5 +6,6 @@ const validateObjectId = require('../middleware/validateObjectId')
 const isAdmin = require('../middleware/isAdmin')
 
 router.get('/', placeController.getAllPlaces)
+router.get('/:placeId',validateObjectId,  placeController.getOnePlace)
 router.post('/', verifyToken, isAdmin, placeController.createPlace)
 module.exports = router

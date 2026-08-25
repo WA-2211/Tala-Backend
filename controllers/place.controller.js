@@ -33,7 +33,23 @@ async function createPlace(req, res){
     }
 }
 
+async function getOnePlace(req, res){
+    try {
+        const getPlace = await Place.findById(req.params.placeId)
+        if(!getPlace){
+            return res.status(404).json({message: 'Place not found!'})
+        }
+        
+        res.status(200).json(getPlace)
+
+    } catch (err) {
+            res.status(500).json({ message: err.message })
+
+    }
+}
+
 module.exports = {
     getAllPlaces,
-    createPlace
+    createPlace,
+    getOnePlace
 }
