@@ -7,7 +7,7 @@ async function signUp(req, res) {
     const { username, password, email, role } = req.body;
 
     // Validation
-    if (!username || !password) return res.status(400).json({message: "Username and password are required.",});
+    if (!username || !password || !email) return res.status(400).json({message: "Username, password and email are required.",});
     if (password.length < 8) return res.status(400).json({message: "Password must be 8 characters or more",});
     if (username.length < 3) return res.status(400).json({message: "Username must be 3 characters or more",});
     if (username.length > 45) return res.status(400).json({message: "Username must be shorter",});
@@ -16,7 +16,7 @@ async function signUp(req, res) {
       username,
       hashedPassword: await bcrypt.hash(password, 12),
       email: email.toLowerCase(),
-      role: role
+      
     });
 
     const { _id, createdAt, updatedAt } = user;

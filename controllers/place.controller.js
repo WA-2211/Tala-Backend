@@ -28,6 +28,9 @@ async function createPlace(req, res){
     }
     
     catch (err) {
+            if (err.name === 'ValidationError') {
+            return res.status(400).json({ message: err.message })
+        }
             res.status(500).json({ message: err.message })
 
     }
@@ -58,10 +61,15 @@ async function updatePlace(req, res){
             priceRange,
             ratingAvg,
             tags
-    })
-
+    }, {new: true})
+        if(!updatedPlace){
+            return res.status(404).json({message: 'Place not found!'})
+        }
         res.status(200).json(updatedPlace)
     } catch (err) {
+            if (err.name === 'ValidationError') {
+            return res.status(400).json({ message: err.message })
+        }
         res.status(500).json({ message: err.message })
 
     }
@@ -70,7 +78,10 @@ async function updatePlace(req, res){
 async function deletePlace(req, res){
     try {
         const deletedPlace = await Place.findByIdAndDelete(req.params.placeId)
-        res.status(204).json(deletedPlace)
+        if(!deletedPlace){
+            return res.status(404).json({message: 'Place not found!'})
+        }
+        res.status(204).json({message: 'Place has been deleted!'})
 
     } catch (err) {
         res.status(500).json({ message: err.message })
