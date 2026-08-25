@@ -1,5 +1,7 @@
 const app = require('./app.js')
 const connectToDB = require('./config/db.js')
+const dns = require("dns")
+dns.setServers(["8.8.8.8", "1.1.1.1"])
 
 // connect to database and listen on Port 3000
 async function startServer() {
