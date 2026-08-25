@@ -7,7 +7,7 @@ const cors = require('cors')
 
 // Routes Import
 const authRoutes = require('./routes/auth.routes')
-
+const placeRoutes = require('./routes/place.routes')
 
 // Middleware
 app.use(
@@ -22,7 +22,7 @@ app.use(morgan('dev'))
 
 // Routes
 app.use('/auth',authRoutes)
-
+app.use('/place', placeRoutes)
 
 
 
