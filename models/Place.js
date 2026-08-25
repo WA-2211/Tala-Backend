@@ -1,6 +1,6 @@
 const {Schema, model} = require("mongoose");
 
-const placesSchema = new Schema(
+const placeSchema = new Schema(
   {
     name: {
         type:String,
@@ -11,7 +11,7 @@ const placesSchema = new Schema(
     category:{
         type: String,
         required: true,
-        enum: ['cafe', 'restaurant', 'event', 'cinema', 'shooping', 'bookstore', 'sports', 'activity', 'workshop', 'gallery', 'park', 'museum', 'other']
+        enum: ['cafe', 'restaurant', 'event', 'cinema', 'shopping', 'bookstore', 'sports', 'activity', 'workshop', 'gallery', 'park', 'museum', 'other']
     },
     description:{
         type: String,
@@ -41,12 +41,11 @@ const placesSchema = new Schema(
         type: [String],
         default: []
     }
-
-  },
+},
   { timestamps: true },
 );
 
 
-const Places = model("Places", placesSchema);
+const Place = model("Place", placeSchema);
 
-module.exports = Places;
+module.exports = Place;
