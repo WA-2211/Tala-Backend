@@ -1,5 +1,39 @@
 const Place = require('../models/Place')
 const User = require('../models/User')
+const Visit = require('../models/Visit')
+
+async function recommendPlace(req, res){
+    try {
+        //visit history
+        const visitHistory = await Visit.find({user: req.user._id}).populate('place')
+
+        const categoryVisits = {} //lookup, how many visits for that category
+        const lastVisits = {} //lookup, date of visit for place n
+        const coolDownPlaces = [] //list, $nin all places excluding places in cooldown
+
+        for(let onePlaceHistory of visitHistory){
+            if(onePlaceHistory && onePlaceHistory.place){
+
+                const category = onePlaceHistory.place.category
+                if(categoryVisits[category]){
+                    categoryVisits[category] = categoryVisits[category]  + 1
+
+                } else {
+                    categoryVisits[category] = 1
+                }
+
+                if(onePlaceHistory.coolDownUntil > new Date()){
+                    coolDownPlaces.push(onePlaceHistory.place._id)
+
+                }
+            }
+            
+        }
+    } catch (err) {
+        res.status(500).json({ message: err.message })
+
+    }
+}
 
 async function getAllPlaces(req, res) {
     try {
@@ -81,7 +115,7 @@ async function deletePlace(req, res){
         if(!deletedPlace){
             return res.status(404).json({message: 'Place not found!'})
         }
-        res.status(204).json({message: 'Place has been deleted!'})
+        res.status(204).json(deletedPlace)
 
     } catch (err) {
         res.status(500).json({ message: err.message })
