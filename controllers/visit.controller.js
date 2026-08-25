@@ -34,6 +34,7 @@ async function createVisit(req, res) {
             place,
             user: req.user._id
         })
+        
         res.status(201).json(createdVisit)
 
     } catch (err) {
@@ -50,6 +51,10 @@ async function getOneVisit(req, res){
         const getVisit = await Visit.findById(req.params.visitId)
         if(!getVisit){
             return res.status(404).json({message: 'Visit not found!'})
+        }
+
+        if(getVisit.user.toString() !== req.user._id.toString()){
+            return res.status(403).json({message: 'Unathorized, Owner access only!'})
         }
         res.status(200).json(getVisit)
 
