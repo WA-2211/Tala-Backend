@@ -5,12 +5,13 @@ const reviewSchema = new Schema(
     rating:{
         type: Number,
         min: 0,
-        max: 5
+        max: 5,
+        required: true
     },
     reviewText:{
         type: String,
         trim: true,
-        maxlength: 100
+        maxlength: 500
     },
     user:{
         type: Schema.Types.ObjectId,
@@ -19,7 +20,8 @@ const reviewSchema = new Schema(
     },
     place:{
         type: Schema.Types.ObjectId,
-        ref: 'Place'
+        ref: 'Place',
+        required: true
     }
   },
   { timestamps: true },

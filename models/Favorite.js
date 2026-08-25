@@ -16,7 +16,7 @@ const favoriteSchema = new Schema(
   { timestamps: true },
 );
 
-
+favoriteSchema.index({user: 1, place: 1}, {unique: true})//avoid favorite same place more than one time
 const Favorite = model("Favorite", favoriteSchema);
 
 module.exports = Favorite;

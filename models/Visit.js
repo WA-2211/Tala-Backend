@@ -4,10 +4,11 @@ const visitSchema = new Schema(
   {
     visitedAt:{
       type: Date,
+      required: true,
+      default: Date.now
     },
    coolDownUntil: {
     type: Date,
-    required: true
    },
    user: {
     type: Schema.Types.ObjectId,

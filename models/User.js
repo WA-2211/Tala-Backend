@@ -12,7 +12,7 @@ const userSchema = new Schema(
     hashedPassword: {
       type: String,
       required: true,
-      minlength: 6
+      minlength: 8
     },
     email: {
       type: String,
