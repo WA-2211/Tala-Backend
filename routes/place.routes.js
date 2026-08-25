@@ -9,4 +9,6 @@ router.get('/', placeController.getAllPlaces)
 router.get('/:placeId',validateObjectId,  placeController.getOnePlace)
 router.post('/', verifyToken, isAdmin, placeController.createPlace)
 router.put('/:placeId', verifyToken, isAdmin, placeController.updatePlace)
+router.delete('/:placeId', verifyToken, isAdmin, placeController.deletePlace)
+
 module.exports = router

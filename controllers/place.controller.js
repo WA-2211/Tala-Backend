@@ -67,9 +67,22 @@ async function updatePlace(req, res){
     }
 }
 
+async function deletePlace(req, res){
+    try {
+        const deletedPlace = await Place.findByIdAndDelete(req.params.placeId)
+        res.status(204).json(deletedPlace)
+
+    } catch (err) {
+        res.status(500).json({ message: err.message })
+
+    }
+
+}
+
 module.exports = {
     getAllPlaces,
     createPlace,
     getOnePlace,
-    updatePlace
+    updatePlace,
+    deletePlace
 }
