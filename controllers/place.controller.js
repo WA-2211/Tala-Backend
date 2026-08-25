@@ -39,7 +39,7 @@ async function getOnePlace(req, res){
         if(!getPlace){
             return res.status(404).json({message: 'Place not found!'})
         }
-        
+
         res.status(200).json(getPlace)
 
     } catch (err) {
@@ -48,8 +48,28 @@ async function getOnePlace(req, res){
     }
 }
 
+async function updatePlace(req, res){
+    try {
+        const {name, category, priceRange, description, ratingAvg, tags} = req.body
+        const updatedPlace = await Place.findByIdAndUpdate(req.params.placeId,{
+            name,
+            description,
+            category,
+            priceRange,
+            ratingAvg,
+            tags
+    })
+
+        res.status(200).json(updatedPlace)
+    } catch (err) {
+        res.status(500).json({ message: err.message })
+
+    }
+}
+
 module.exports = {
     getAllPlaces,
     createPlace,
-    getOnePlace
+    getOnePlace,
+    updatePlace
 }
