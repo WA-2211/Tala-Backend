@@ -76,8 +76,9 @@ async function recommendPlace(req, res){
             return combinePlaceWithScore
         }) 
 
-        placesScored.sort((a, b)=> b.score - a.score)
-        res.status(200).json(placesScored)
+        const topPicks = placesScored.sort((a, b)=> b.score - a.score).slice(0,2)
+        res.status(200).json(topPicks)
+
     } catch (err) {
         res.status(500).json({ message: err.message })
 
