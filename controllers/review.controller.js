@@ -70,7 +70,7 @@ async function deleteReview(req, res){
         }
     
         const deletedReview = await Review.findByIdAndDelete(reviewId)
-        res.status(204).json(deleteReview)
+        res.status(204).json(deletedReview)
     } catch (err) {
         res.status(500).json({ message: err.message })
 
