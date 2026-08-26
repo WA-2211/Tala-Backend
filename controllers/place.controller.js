@@ -11,6 +11,8 @@ async function recommendPlace(req, res){
         const lastVisits = {} //lookup, date of visit for place n
         const coolDownPlaces = [] //list, $nin all places excluding places in cooldown
 
+
+
         for(let onePlaceHistory of visitHistory){
             if(onePlaceHistory && onePlaceHistory.place){
 
@@ -35,6 +37,9 @@ async function recommendPlace(req, res){
             
         }
 
+        //calc highest visit
+        const highestVisit = Math.max(... Object.values(categoryVisits))
+
         //get all places excluding cooldown places
         const placesToRecommend = await Place.find({
             _id: {$nin: coolDownPlaces}
@@ -42,13 +47,24 @@ async function recommendPlace(req, res){
         })
 
         //calculate recommendation scoring
-        function calculateScore(){
+        function calculateScore(place){
+            let score = 0
             //never visited
-
+            if(!lastVisits[place._id]){
+                score += 50
+            }
             //visited, but its been a while
-
+            else{
+                const timeDifference = new Date() - lastVisits[place._id]
+                const days = timeDifference /( 1000 * 60 * 60 * 24)
+                const daysDiff = Math.min(days, 25)
+                score += daysDiff
+            }
             //under-explored category
-
+                const diff = (categoryVisits[place.category] || 0) / highestVisit
+                const sub = 1 - diff 
+                score += sub * 20
+            
             //highest rating places
         }
     } catch (err) {
