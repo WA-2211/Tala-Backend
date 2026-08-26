@@ -10,6 +10,7 @@ const authRoutes = require('./routes/auth.routes')
 const placeRoutes = require('./routes/place.routes')
 const visitRoutes = require('./routes/visit.routes')
 const favoriteRoutes = require('./routes/favorite.routes')
+const reviewRoutes = require('./routes/review.routes')
 
 // Middleware
 app.use(
@@ -27,5 +28,7 @@ app.use('/auth',authRoutes)
 app.use('/place', placeRoutes)
 app.use('/visit', visitRoutes)
 app.use('/favorite', favoriteRoutes)
+app.use('/place/:placeId/review', reviewRoutes)
+
 
 module.exports = app
