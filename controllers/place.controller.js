@@ -1,5 +1,89 @@
 const Place = require('../models/Place')
 const User = require('../models/User')
+const Visit = require('../models/Visit')
+
+async function recommendPlace(req, res){
+    try {
+        //visit history
+        const visitHistory = await Visit.find({user: req.user._id}).populate('place')
+
+        const categoryVisits = {} //lookup, how many visits for that category
+        const lastVisits = {} //lookup, date of visit for place n
+        const coolDownPlaces = [] //list, $nin all places excluding places in cooldown
+
+
+
+        for(let onePlaceHistory of visitHistory){
+            if(onePlaceHistory && onePlaceHistory.place){
+
+                const category = onePlaceHistory.place.category
+                if(categoryVisits[category]){
+                    categoryVisits[category] = categoryVisits[category]  + 1
+
+                } else {
+                    categoryVisits[category] = 1
+                }
+
+                if(onePlaceHistory.coolDownUntil > new Date()){
+                    coolDownPlaces.push(onePlaceHistory.place._id)
+
+                }
+
+                const onePlace = onePlaceHistory.place._id
+                if(!lastVisits[onePlace] || onePlaceHistory.visitedAt > lastVisits[onePlace]){
+                    lastVisits[onePlace] = onePlaceHistory.visitedAt 
+                }
+            }
+            
+        }
+
+        //calc highest visit
+        const highestVisit = Math.max(... Object.values(categoryVisits))
+
+        //get all places excluding cooldown places
+        const placesToRecommend = await Place.find({
+            _id: {$nin: coolDownPlaces}
+        
+        })
+
+        //calculate recommendation scoring
+        function calculateScore(place){
+            let score = 0
+            //never visited
+            if(!lastVisits[place._id]){
+                score += 50
+            }
+            //visited, but its been a while
+            else{
+                const timeDifference = new Date() - lastVisits[place._id]
+                const days = timeDifference /( 1000 * 60 * 60 * 24)
+                const daysDiff = Math.min(days, 25)
+                score += daysDiff
+            }
+            //under-explored category
+                const diff = (categoryVisits[place.category] || 0) / highestVisit
+                const sub = 1 - diff 
+                score += sub * 30
+            
+            //highest rating places
+            score += place.ratingAvg * 4
+            return score
+        }
+
+        const placesScored = placesToRecommend.map(place =>{
+          const score = calculateScore(place)
+            const combinePlaceWithScore = {place, score}
+            return combinePlaceWithScore
+        }) 
+
+        const topPicks = placesScored.sort((a, b)=> b.score - a.score).slice(0,2)
+        res.status(200).json(topPicks)
+
+    } catch (err) {
+        res.status(500).json({ message: err.message })
+
+    }
+}
 
 async function getAllPlaces(req, res) {
     try {
@@ -81,7 +165,7 @@ async function deletePlace(req, res){
         if(!deletedPlace){
             return res.status(404).json({message: 'Place not found!'})
         }
-        res.status(204).json({message: 'Place has been deleted!'})
+        res.status(204).json(deletedPlace)
 
     } catch (err) {
         res.status(500).json({ message: err.message })
@@ -95,5 +179,6 @@ module.exports = {
     createPlace,
     getOnePlace,
     updatePlace,
-    deletePlace
+    deletePlace,
+    recommendPlace
 }
