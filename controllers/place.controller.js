@@ -75,7 +75,9 @@ async function recommendPlace(req, res){
             const combinePlaceWithScore = {place, score}
             return combinePlaceWithScore
         }) 
-        
+
+        placesScored.sort((a, b)=> b.score - a.score)
+        res.status(200).json(placesScored)
     } catch (err) {
         res.status(500).json({ message: err.message })
 
@@ -176,5 +178,6 @@ module.exports = {
     createPlace,
     getOnePlace,
     updatePlace,
-    deletePlace
+    deletePlace,
+    recommendPlace
 }
