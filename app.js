@@ -13,7 +13,7 @@ const favoriteRoutes = require('./routes/favorite.routes')
 const reviewRoutes = require('./routes/review.routes')
 const planRoutes = require('./routes/plan.routes')
 const inviteRoutes = require('./routes/invite.routes')
-
+const publicInviteRoutes = require('./routes/publicInvite.routes')
 // Middleware
 app.use(
     cors({
@@ -33,5 +33,5 @@ app.use('/favorite', favoriteRoutes)
 app.use('/place/:placeId/review', reviewRoutes)
 app.use('/plan', planRoutes)
 app.use('/plan/:planId/invite', inviteRoutes)
-
+app.use('/invite', publicInviteRoutes)
 module.exports = app

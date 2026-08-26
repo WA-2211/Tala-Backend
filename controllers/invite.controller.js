@@ -58,7 +58,34 @@ async function getAllInvites(req, res){
     }
 }
 
+async function updateInvite(req, res){
+    try {
+        const {inviteId} = req.params
+        const {status} = req.body
+
+        const getInvite = await Invite.findById(inviteId)
+        if(!getInvite){
+            return res.status(404).json({message: 'No invite found!'})
+        }
+        if(getInvite.user.toString() !== req.user._id.toString()){
+            return res.status(403).json({message: 'Unathorized, Owner access only!'})
+        } 
+        const updatedInvite = await Invite.findByIdAndUpdate(inviteId, {
+            status
+        }, {new:true, runValidators: true})
+
+        res.status(200).json(updatedInvite)
+    } catch (err) {
+                if (err.name === 'ValidationError') {
+            return res.status(400).json({ message: err.message })
+        }
+        res.status(500).json({ message: err.message })
+
+    }
+}
+
 module.exports = {
     createInvite,
-    getAllInvites
+    getAllInvites,
+    updateInvite
 }
