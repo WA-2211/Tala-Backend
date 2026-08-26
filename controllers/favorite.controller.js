@@ -40,8 +40,46 @@ async function createFavorite(req, res){
     }
 }
 
+async function getOneFavorite(req, res){
+    try {
+        const getFavorite = await Favorite.findById(req.params.favoriteId)
+        if(!getFavorite){
+            return res.status(404).json({message: 'Favorited Place not found!'})
+        }
+
+        if(getFavorite.user.toString() !== req.user._id.toString()){
+            return res.status(403).json({message: 'Unathorized, Owner access only!'})
+        }
+
+        res.status(200).json(getFavorite)
+    } catch (err) {
+        res.status(500).json({ message: err.message })
+
+    }
+}
+
+async function deleteFavorite(req, res){
+    try {
+        const getFavorite = await Favorite.findById(req.params.favoriteId)
+        if(!getFavorite){
+            return res.status(404).json({message: 'Favorited Place not found!'})
+        }
+
+        if(getFavorite.user.toString() !== req.user._id.toString()){
+            return res.status(403).json({message: 'Unathorized, Owner access only!'})
+        }
+
+        const deletedFavorite = await Favorite.findByIdAndDelete(req.params.favoriteId)
+        res.status(204).json(deletedFavorite)
+    } catch (err) {
+        res.status(500).json({ message: err.message }) 
+    }
+}
+
 
 module.exports = {
     getAllFavorites,
-    createFavorite
+    createFavorite,
+    getOneFavorite,
+    deleteFavorite
 }

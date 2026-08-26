@@ -5,6 +5,8 @@ const verifyToken = require('../middleware/verifyToken')
 
 router.get('/', verifyToken, favoriteController.getAllFavorites)
 router.post('/', verifyToken, favoriteController.createFavorite)
+router.get('/:favoriteId', verifyToken, validateObjectId, favoriteController.getOneFavorite)
+router.delete('/:favoriteId', verifyToken, validateObjectId, favoriteController.deleteFavorite)
 
 
 module.exports = router
