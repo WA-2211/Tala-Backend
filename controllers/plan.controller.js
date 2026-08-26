@@ -73,7 +73,7 @@ async function getOnePlan(req, res) {
 
 async function updatePlan(req, res){
     try {
-        const { scheduledDate, place} = req.body
+        const { scheduledDate, place, status} = req.body
         const getPlan = await Plan.findById(req.params.planId)
         if(!getPlan){
             return res.status(404).json({message: 'Plan not found!'})
@@ -84,8 +84,9 @@ async function updatePlan(req, res){
         
         const updatedPlan = await Plan.findByIdAndUpdate(req.params.planId, {
             scheduledDate,
-            place
-        }, {new:true})
+            place,
+            status
+        }, {new:true, runValidators: true})
         res.status(200).json(updatedPlan)
 
     } catch (err) {
