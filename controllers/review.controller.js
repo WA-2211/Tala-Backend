@@ -16,6 +16,24 @@ async function getAllReviews(req, res){
     }
 }
 
+async function recalculateRating(placeId){
+        const RatingRecalculate = await Review.aggregate([
+            {$match:{place: placeId}},
+            {$group: {_id: '$place', ratingAvg:{$avg: '$rating'} }}
+        ])
+
+        let updatedAvg 
+        if(RatingRecalculate.length > 0){
+            updatedAvg = RatingRecalculate[0].ratingAvg
+        }
+         else{
+            updatedAvg = 0
+         }
+
+         await Place.findByIdAndUpdate(placeId, {ratingAvg: updatedAvg})
+}
+
+
 async function createReview(req, res){
     try {
         const {place, rating, reviewText} = req.body
@@ -34,20 +52,7 @@ async function createReview(req, res){
             place
         })
 
-        const recalculateRating = await Review.aggregate([
-            {$match:{place: foundPlace._id}},
-            {$group: {_id: '$place', ratingAvg:{$avg: '$rating'} }}
-        ])
-
-        let updatedAvg 
-        if(recalculateRating.length > 0){
-            updatedAvg = recalculateRating[0].ratingAvg
-        }
-         else{
-            updatedAvg = 0
-         }
-
-         await Place.findByIdAndUpdate(foundPlace._id, {ratingAvg: updatedAvg})
+        await recalculateRating(foundPlace._id)
         res.status(201).json(createdReview)
         
     } catch (err) {
@@ -70,7 +75,10 @@ async function deleteReview(req, res){
         }
     
         const deletedReview = await Review.findByIdAndDelete(reviewId)
+
+         await recalculateRating(foundReview.place)
         res.status(204).json(deletedReview)
+
     } catch (err) {
         res.status(500).json({ message: err.message })
 
