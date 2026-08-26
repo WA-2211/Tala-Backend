@@ -51,12 +51,34 @@ async function createReview(req, res){
         res.status(201).json(createdReview)
         
     } catch (err) {
+        if (err.name === 'ValidationError') {
+            return res.status(400).json({ message: err.message })
+        }
         res.status(500).json({ message: err.message })
     }
 }
 
+async function deleteReview(req, res){
+    try {
+        const {reviewId} = req.params
+        const foundReview = await Review.findById(reviewId)
+        if(!foundReview){
+            return res.status(404).json({message: 'Review not found!'})
+        }
+        if(foundReview.user.toString() !== req.user._id.toString()){
+                return res.status(403).json({message: 'Unathorized, Owner access only!'})
+        }
+    
+        const deletedReview = await Review.findByIdAndDelete(reviewId)
+        res.status(204).json(deleteReview)
+    } catch (err) {
+        res.status(500).json({ message: err.message })
+
+    }
+}
 
 module.exports = {
     getAllReviews,
-    createReview
+    createReview,
+    deleteReview
 }

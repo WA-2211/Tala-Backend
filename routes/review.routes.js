@@ -5,4 +5,5 @@ const verifyToken = require('../middleware/verifyToken')
 
 router.get('/', verifyToken, reviewController.getAllReviews)
 router.post('/', verifyToken, reviewController.createReview)
+router.delete('/:reviewId', verifyToken, validateObjectId, reviewController.deleteReview)
 module.exports = router
