@@ -12,6 +12,7 @@ const visitRoutes = require('./routes/visit.routes')
 const favoriteRoutes = require('./routes/favorite.routes')
 const reviewRoutes = require('./routes/review.routes')
 const planRoutes = require('./routes/plan.routes')
+const inviteRoutes = require('./routes/invite.routes')
 
 // Middleware
 app.use(
@@ -31,5 +32,6 @@ app.use('/visit', visitRoutes)
 app.use('/favorite', favoriteRoutes)
 app.use('/place/:placeId/review', reviewRoutes)
 app.use('/plan', planRoutes)
+app.use('/plan/:planId/invite', inviteRoutes)
 
 module.exports = app
