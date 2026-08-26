@@ -71,9 +71,58 @@ async function getOnePlan(req, res) {
     }
 }
 
+async function updatePlan(req, res){
+    try {
+        const { scheduledDate, place} = req.body
+        const getPlan = await Plan.findById(req.params.planId)
+        if(!getPlan){
+            return res.status(404).json({message: 'Plan not found!'})
+        }
+        if(getPlan.user.toString() !== req.user._id.toString()){
+            return res.status(403).json({message: 'Unathorized, Owner access only!'})
+        } 
+        
+        const updatedPlan = await Plan.findByIdAndUpdate(req.params.planId, {
+            scheduledDate,
+            place
+        }, {new:true})
+        res.status(200).json(updatedPlan)
+
+    } catch (err) {
+        if (err.name === 'ValidationError') {
+            return res.status(400).json({ message: err.message })
+        }        
+        res.status(500).json({ message: err.message })
+
+    }
+}
+
+async function deletePlan(req, res){
+    try {
+       const getPlan = await Plan.findById(req.params.planId)
+        if(!getPlan){
+            return res.status(404).json({message: 'Plan not found!'})
+        }
+        if(getPlan.user.toString() !== req.user._id.toString()){
+            return res.status(403).json({message: 'Unathorized, Owner access only!'})
+        } 
+        
+        const deletedPlan = await Plan.findByIdAndDelete(req.params.planId)
+        res.status(204).json(deletedPlan)
+
+       } catch (err) {
+        if (err.name === 'ValidationError') {
+            return res.status(400).json({ message: err.message })
+        }        
+        res.status(500).json({ message: err.message })        
+    }
+}
+
 module.exports = {
     getAllPlans,
     createPlan,
     getPLanByLink,
-    getOnePlan
+    getOnePlan,
+    updatePlan,
+    deletePlan
 }
