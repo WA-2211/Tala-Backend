@@ -41,22 +41,39 @@ async function createPlan(req, res) {
     }
 }
 
-async function getPLanByLink(req, res){
+async function getPLanByLink(req, res) {
     try {
-        const getPlan = await Plan.findOne({inviteLink: req.params.inviteLink}).populate('place')
-        if(!getPlan){
-            return res.status(404).json({message: 'Plan not found!'})
+        const getPlan = await Plan.findOne({ inviteLink: req.params.inviteLink }).populate('place')
+        if (!getPlan) {
+            return res.status(404).json({ message: 'Plan not found!' })
         }
         res.status(200).json(getPlan)
-        
+
     } catch (err) {
         res.status(500).json({ message: err.message })
-        
+
+    }
+}
+
+async function getOnePlan(req, res) {
+    try {
+        const getPlan = await Plan.findById(req.params.planId).populate('place')
+        if (!getPlan) {
+            return res.status(404).json({ message: 'Plan not found!' })
+        }
+        if (getPlan.user.toString() !== req.user._id.toString()) {
+            return res.status(403).json({ message: 'Unathorized, Owner access only!' })
+        }
+        res.status(200).json(getPlan)
+    } catch (err) {
+        res.status(500).json({ message: err.message })
+
     }
 }
 
 module.exports = {
     getAllPlans,
     createPlan,
-    getPLanByLink
+    getPLanByLink,
+    getOnePlan
 }
