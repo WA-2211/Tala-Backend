@@ -1,6 +1,7 @@
 const Plan = require('../models/Plan')
 const User = require('../models/User')
 const Place = require('../models/Place')
+const crypto = require('crypto')
 
 async function getAllPlans(req, res) {
     try {
@@ -18,12 +19,13 @@ async function getAllPlans(req, res) {
 
 async function createPlan(req, res) {
     try {
-        const { place, scheduledDate, inviteLink } = req.body
+        const { place, scheduledDate } = req.body
         const foundPlace = await Place.findById(place)
         if (!foundPlace) {
             return res.status(404).json({ message: 'Place not found!' })
         }
 
+        const inviteLink = crypto.randomBytes(32).toString('base64url')
         const createdPlan = await Plan.create({
             user: req.user._id,
             scheduledDate,
@@ -39,8 +41,22 @@ async function createPlan(req, res) {
     }
 }
 
+async function getPLanByLink(req, res){
+    try {
+        const getPlan = await Plan.findOne({inviteLink: req.params.inviteLink}).populate('place')
+        if(!getPlan){
+            return res.status(404).json({message: 'Plan not found!'})
+        }
+        res.status(200).json(getPlan)
+        
+    } catch (err) {
+        res.status(500).json({ message: err.message })
+        
+    }
+}
 
 module.exports = {
     getAllPlans,
-    createPlan
+    createPlan,
+    getPLanByLink
 }

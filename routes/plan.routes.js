@@ -5,5 +5,6 @@ const verifyToken = require('../middleware/verifyToken')
 
 router.get('/', verifyToken, planController.getAllPlans)
 router.post('/', verifyToken, planController.createPlan)
+router.get('/invite/:inviteLink', planController.getPLanByLink)
 
 module.exports = router
