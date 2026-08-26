@@ -5,5 +5,4 @@ const verifyToken = require('../middleware/verifyToken')
 
 router.post('/', verifyToken, inviteController.createInvite)
 router.get('/', verifyToken, inviteController.getAllInvites)
-
 module.exports = router
