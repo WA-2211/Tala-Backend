@@ -26,8 +26,30 @@ async function recommendPlace(req, res){
                     coolDownPlaces.push(onePlaceHistory.place._id)
 
                 }
+
+                const onePlace = onePlaceHistory.place._id
+                if(!lastVisits[onePlace] || onePlaceHistory.visitedAt > lastVisits[onePlace]){
+                    lastVisits[onePlace] = onePlaceHistory.visitedAt 
+                }
             }
             
+        }
+
+        //get all places excluding cooldown places
+        const placesToRecommend = await Place.find({
+            _id: {$nin: coolDownPlaces}
+        
+        })
+
+        //calculate recommendation scoring
+        function calculateScore(){
+            //never visited
+
+            //visited, but its been a while
+
+            //under-explored category
+
+            //highest rating places
         }
     } catch (err) {
         res.status(500).json({ message: err.message })
