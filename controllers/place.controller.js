@@ -63,9 +63,11 @@ async function recommendPlace(req, res){
             //under-explored category
                 const diff = (categoryVisits[place.category] || 0) / highestVisit
                 const sub = 1 - diff 
-                score += sub * 20
+                score += sub * 30
             
             //highest rating places
+            score += place.ratingAvg * 4
+            return score
         }
     } catch (err) {
         res.status(500).json({ message: err.message })
