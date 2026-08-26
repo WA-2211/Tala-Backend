@@ -69,6 +69,13 @@ async function recommendPlace(req, res){
             score += place.ratingAvg * 4
             return score
         }
+
+        const placesScored = placesToRecommend.map(place =>{
+          const score = calculateScore(place)
+            const combinePlaceWithScore = {place, score}
+            return combinePlaceWithScore
+        }) 
+        
     } catch (err) {
         res.status(500).json({ message: err.message })
 
