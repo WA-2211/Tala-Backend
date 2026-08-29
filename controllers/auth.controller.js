@@ -2,21 +2,22 @@ const bcrypt = require("bcrypt");
 const User = require("../models/User");
 const jwt = require("jsonwebtoken");
 
+
 async function signUp(req, res) {
   try {
     const { username, password, email, role } = req.body;
 
     // Validation
-    if (!username || !password || !email) return res.status(400).json({message: "Username, password and email are required.",});
-    if (password.length < 8) return res.status(400).json({message: "Password must be 8 characters or more",});
-    if (username.length < 3) return res.status(400).json({message: "Username must be 3 characters or more",});
-    if (username.length > 45) return res.status(400).json({message: "Username must be shorter",});
+    if (!username || !password || !email) return res.status(400).json({ message: "Username, password and email are required.", });
+    if (password.length < 8) return res.status(400).json({ message: "Password must be 8 characters or more", });
+    if (username.length < 3) return res.status(400).json({ message: "Username must be 3 characters or more", });
+    if (username.length > 45) return res.status(400).json({ message: "Username must be shorter", });
 
     const user = await User.create({
       username,
       hashedPassword: await bcrypt.hash(password, 12),
       email: email.toLowerCase(),
-      
+
     });
 
     const { _id, createdAt, updatedAt } = user;
@@ -46,14 +47,14 @@ async function signUp(req, res) {
 
 async function signIn(req, res) {
   try {
-    const { username, password } = req.body;
+    const { email, password } = req.body;
 
-    if (!username || !password) {
+    if (!email || !password) {
       return res.status(400).json({
-        message: "Username and password are required.",
+        message: "Email and password are required.",
       });
     }
-    const user = await User.findOne({ username:username.toLowerCase().trim() });
+    const user = await User.findOne({ email: email.toLowerCase().trim() });
     if (!user) {
       return res.status(401).json({ message: "Invalid credentials." });
     }
@@ -65,6 +66,9 @@ async function signIn(req, res) {
     if (!isPasswordCorrect) {
       return res.status(401).json({ message: "Invalid credentials." });
     }
+
+
+
 
     // Construct the payload
     const payload = { username: user.username, _id: user._id, role: user.role };
@@ -100,8 +104,8 @@ async function verifyUser(req, res) {
     }
 
     return res.status(200).json({
-        _id: user._id,
-        username: user.username,
+      _id: user._id,
+      username: user.username,
     });
   } catch (err) {
     console.error(err);
@@ -111,6 +115,8 @@ async function verifyUser(req, res) {
     });
   }
 }
+
+
 
 module.exports = {
   signUp,

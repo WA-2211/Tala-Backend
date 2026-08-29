@@ -6,9 +6,7 @@ async function getAllReviews(req, res){
     try {
         const {placeId} = req.params
         const getReviews = await Review.find({place: placeId}).populate('user', 'username')
-        if(getReviews.length === 0){
-            return res.status(200).json({message: 'No reviews found!'})
-        }
+
 
         res.status(200).json(getReviews)
     } catch (err) {
@@ -37,7 +35,7 @@ async function recalculateRating(placeId){
 async function createReview(req, res){
     try {
         const {place, rating, reviewText} = req.body
-        if(rating > 5 || rating < 1){
+        if(rating > 5 || rating < 0){
             return res.status(400).json({message: 'Rating must be between 1 - 5!'})
         }
                 const foundPlace = await Place.findById(place)
@@ -51,6 +49,8 @@ async function createReview(req, res){
             reviewText,
             place
         })
+
+        await createdReview.populate('user', 'username')
 
         await recalculateRating(foundPlace._id)
         res.status(201).json(createdReview)
