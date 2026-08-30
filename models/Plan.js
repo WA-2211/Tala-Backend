@@ -8,9 +8,8 @@ const planSchema = new Schema(
         default:'scheduled'
     },
     scheduledDate:{
-        type: Date,
-        required: true
-    },
+        type: Date
+        },
     inviteLink:{
         type: String
     },
