@@ -175,11 +175,41 @@ async function deletePlace(req, res){
 
 }
 
+async function getNearMePlaces(req, res){
+    try {
+        const {lat, long} = req.query
+        if(!long || !lat){
+            return res.status(400).json({message: 'Longitude and Latitude are required!'})
+        }
+
+        const nearMePlaces = await Place.aggregate([
+            {
+                $geoNear:{
+                    near: {
+                        type: 'Point',
+                        coordinates: [Number(long), Number(lat)]
+                    },
+                    key: 'location',
+                    distanceField: 'distance',
+                    maxDistance:2000,
+                    spherical: true
+                }
+            }
+        ])
+
+        res.status(200).json(nearMePlaces)
+    } catch (err) {
+        res.status(500).json({ message: err.message })
+  
+    }
+}
+
 module.exports = {
     getAllPlaces,
     createPlace,
     getOnePlace,
     updatePlace,
     deletePlace,
-    recommendPlace
+    recommendPlace,
+    getNearMePlaces
 }
