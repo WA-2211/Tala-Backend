@@ -40,6 +40,18 @@ const placeSchema = new Schema(
     tags:{
         type: [String],
         default: []
+    },
+    location: {
+        type:{
+            type: String,
+            enum:['Point'],
+            default: 'Point'
+        },
+        coordinates:{
+            type: [Number],
+            required: false
+
+        }
     }
 },
   { timestamps: true },

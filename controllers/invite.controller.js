@@ -49,9 +49,6 @@ async function getAllInvites(req, res){
         }
         
         const getInvites = await Invite.find({plan: planId}).populate('user', 'username')
-        if(getInvites.length === 0){
-            return res.status(200).json({message: 'No Invites to show yet!'})
-        }
         res.status(200).json(getInvites)
     } catch (err) {
         res.status(500).json({ message: err.message })
@@ -88,9 +85,9 @@ async function updateInvite(req, res){
 async function getMyInvites(req, res){
     try {
         const getInvites = await Invite.find({user: req.user._id}).populate({path:'plan', populate: {path: 'place'}})
-        if(getInvites.length === 0){
-            return res.status(200).json({message: 'No Invites to show yet!'})
-        }
+        // if(getInvites.length === 0){
+        //     return res.status(200).json({message: 'No Invites to show yet!'})
+        // }
         res.status(200).json(getInvites)
     } catch (err) {
         res.status(500).json({ message: err.message })

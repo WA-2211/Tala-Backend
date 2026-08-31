@@ -82,6 +82,7 @@ async function signIn(req, res) {
       user: {
         _id: user._id,
         username: user.username,
+        role: user.role
       },
     });
   } catch (err) {
@@ -106,6 +107,7 @@ async function verifyUser(req, res) {
     return res.status(200).json({
       _id: user._id,
       username: user.username,
+      role:user.role
     });
   } catch (err) {
     console.error(err);
