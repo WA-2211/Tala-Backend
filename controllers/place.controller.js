@@ -98,14 +98,15 @@ async function getAllPlaces(req, res) {
 
 async function createPlace(req, res){
     try {
-        const {name, category, priceRange, description, ratingAvg, tags} = req.body
+        const {name, category, priceRange, description, ratingAvg, tags, location} = req.body
         const createdPlace = await Place.create({
             name,
             description,
             category,
             priceRange,
             ratingAvg,
-            tags
+            tags,
+            location
     })
 
     res.status(201).json(createdPlace)
