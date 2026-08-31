@@ -2,6 +2,17 @@ const Place = require('../models/Place')
 const User = require('../models/User')
 const Visit = require('../models/Visit')
 
+function filterPlace(query){
+    const {category, priceRange, ratingMin} = query
+
+    const filter = {}
+    if(category) filter.category = category
+    if(priceRange) filter['priceRange.category'] = priceRange
+    if(ratingMin) filter.ratingAvg = {$gt: Number(ratingMin)}
+
+    return filter
+}
+
 async function recommendPlace(req, res){
     try {
         //visit history
@@ -87,7 +98,8 @@ async function recommendPlace(req, res){
 
 async function getAllPlaces(req, res) {
     try {
-        const allPlaces = await Place.find()
+        
+        const allPlaces = await Place.find(filterPlace(req.query))
         res.status(200).json(allPlaces)
 
     } catch (err) {
@@ -192,7 +204,8 @@ async function getNearMePlaces(req, res){
                     key: 'location',
                     distanceField: 'distance',
                     maxDistance:2000,
-                    spherical: true
+                    spherical: true,
+                    query: filterPlace(req.query)
                 }
             }
         ])
@@ -203,6 +216,8 @@ async function getNearMePlaces(req, res){
   
     }
 }
+
+
 
 module.exports = {
     getAllPlaces,
