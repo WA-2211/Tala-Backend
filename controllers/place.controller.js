@@ -189,21 +189,24 @@ async function deletePlace(req, res){
 
 async function getNearMePlaces(req, res){
     try {
-        const {lat, long} = req.query
-        if(!long || !lat){
+        const {radius} = req.query
+        const long = parseFloat(req.query.long)
+        const lat = parseFloat(req.query.lat);       
+        if(isNaN(long) || isNaN(lat)){
             return res.status(400).json({message: 'Longitude and Latitude are required!'})
         }
 
+        const searchRaduis = radius ? Number(radius) : 3000
         const nearMePlaces = await Place.aggregate([
             {
                 $geoNear:{
                     near: {
                         type: 'Point',
-                        coordinates: [Number(long), Number(lat)]
+                        coordinates: [long, lat]
                     },
                     key: 'location',
                     distanceField: 'distance',
-                    maxDistance:2000,
+                    maxDistance:searchRaduis,
                     spherical: true,
                     query: filterPlace(req.query)
                 }
