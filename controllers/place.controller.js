@@ -8,7 +8,7 @@ function filterPlace(query){
     const filter = {}
     if(category) filter.category = category
     if(priceRange) filter['priceRange.category'] = priceRange
-    if(ratingMin) filter.ratingAvg = {$gt: Number(ratingMin)}
+    if(ratingMin) filter.ratingAvg = {$gte: Number(ratingMin)}
 
     return filter
 }
