@@ -107,7 +107,9 @@ async function acceptInvite(req, res) {
             plan: foundPlan._id
         })
         if (foundInvite) {
-            return res.status(200).json({ message: 'You have joined the plan!', invite: foundInvite })
+            foundInvite.status = 'accepted'
+            await foundInvite.save()
+            return res.status(200).json(foundInvite)
         }
 
         const joinInvite = await Invite.create({
