@@ -4,9 +4,9 @@
 **Tal'a - طلعة**, is an app for going out in Bahrain. Tal'a recommends places and events for people who often visits the same places or who don't know where to go, relying on users's visits history and locations and preventing them from going to places they have already been to.
 
 ## Related Links
-- Backend API:
-- Frontend App:
-- Frontend Repo:
+- Backend API: [Deployed Backend](https://tala-backend-83km.onrender.com/)
+- Frontend App: [Deployed Frontend](https://talafrontend.netlify.app/)
+- Frontend Repo: [Frontend GitHub Repository](https://github.com/WA-2211/Tala-Frontend)
 
 ## Technologies Used
 - Node.js
@@ -33,7 +33,7 @@
 - Shareable, publicly viewable plan invite links (no login required to view)
 - Account-based invite system with accept/reject flow
 
-## Project Structurer
+## Project Structure
 ```
 server/
 ├── config/
@@ -157,7 +157,7 @@ npm run dev
 | status | String | `pending` / `accepted` / `rejected`, defaults to `pending` |
 
 ## Entity Relationships
-![ERD image](images\ERD.png)
+![ERD image](public/images/ERD.png)
 
 ## API Base URL
 [Deployed Tal'a Backend Link](https://tala-backend-83km.onrender.com/)
@@ -165,11 +165,11 @@ npm run dev
 ## Endpoints
 
 ### Auth
-| Method | Endpoint      | Access        | Description                    |
-|--------|---------------|---------------|--------------------------------|
-| GET    | /auth/me      | Authenticated | Get the current user's profile |
-| POST   | /auth/sign-up | Public        | Create a new user account      |
-| GET    | /auth/sign-in | Public        | Authenticate and recive a JWT  |
+| Method | Endpoint      | Access        | Description                     |
+|--------|---------------|---------------|----------------------------------|
+| GET    | /auth/me      | Authenticated | Get the current user's profile  |
+| POST   | /auth/sign-up | Public        | Create a new user account       |
+| POST   | /auth/sign-in | Public        | Authenticate and receive a JWT  |
 
 ### Place
 | Method | Endpoint            | Access        | Description                      |
@@ -209,16 +209,13 @@ npm run dev
 | DELETE | /plan/:planId            | Owner         | Delete a plan                                        |
 | GET    | /plan/invite/:inviteLink | Public        | View a plan's details via its link                   |
 ### Invite
-| Method | Endpoint            | Access        | Description                      |
-|--------|---------------------|---------------|----------------------------------|
-| GET    | /place              | Public        | Get all places                   |
-| POST   | /place              | Admin         | Create a place                   |
-| GET    | /place/recommended  | Authenticated | Get personalized recommendations |
-| GET    | /place/:placeId     | Public        | Get one place                    |
-| PUT    | /place/:placeId     | Admin         | Update a place                   |
-| DELETE | /place/:placeId     | Admin         | Delete a place                   |
-| GET    | /place/place-nearby | Authenticated | Get places by distance           |
-
+| Method | Endpoint                  | Access        | Description                                  |
+|--------|---------------------------|---------------|-----------------------------------------------|
+| POST   | /plan/:planId/invite      | Owner         | Invite a user to a plan by username           |
+| GET    | /plan/:planId/invite      | Owner         | Get all invites for a plan                    |
+| GET    | /invite                   | Authenticated | Get the current user's invites                |
+| PUT    | /invite/:inviteId         | Invited user  | Accept or reject an invite                    |
+| POST   | /plan/invite/:inviteLink  | Authenticated | Join a plan via its public invite link        |
 
 ## Status Codes
 | Status | Meaning in this API |
